@@ -1,16 +1,15 @@
-Lackie
-======
-Warning
--------
+= Lackie
+
+== Warning
+
 I haven't used Lackie to develop an application yet. But I have used it in
 various browsers including firefox, chrome and the samsung maple emulator.
 
-About
------
+== About
+
 Lackie enables automation of remote applications using an HTTP middleman:
-<pre>
+
   Ruby Client -> Lackie Service <- Remote App
-</pre>
 
 Lackie automates applications running in environments that are difficult to
 control remotely. Lackie requires minimal support in target environments:
@@ -28,12 +27,10 @@ Lackie uses an HTTP service as a proxy for application automation commands:
   4. the application executes the command and sends the result to Lackie
   5. the automator polls Lackie and receives the result (or error)
 
-Usage
------
+== Usage
 
 Lackie is implemented as rack middleware, so:
 
-<pre>
   require 'rack'
   require 'lackie'
   require 'lackie/rack'
@@ -42,7 +39,6 @@ Lackie is implemented as rack middleware, so:
     use Lackie::Rack::Middleware
     run MyApp
   end
-</pre>
   
 It will intercept all requests where the path starts with /lackie/
 
@@ -52,19 +48,18 @@ Lackie expects remote applications to:
   2. execute those commands when they appear
   3. send string results back to the middleware
 
-Example
--------
+== Example
+
 The source code includes an example rack app:
-<pre>
+
   rackup features/support/config.ru
-</pre>
+
 Open this URL in your browser of choice:
-<pre>
+
   http://localhost:9292/example_app/app.html
-</pre>
+
 Now you can execute commands in the remote application:
-<pre>
+
   require 'rubygems'
   require 'lackie'
   Lackie::RemoteControl.new("localhost", 9292).exec("1 + 2") # => "3"
-</pre>

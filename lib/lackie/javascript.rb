@@ -1,0 +1,1 @@
+require 'lackie/javascript/surrender'

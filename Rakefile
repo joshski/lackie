@@ -11,3 +11,17 @@ desc  "Run all specs, then all features"
 task :default do
   system("rspec spec && cucumber features")
 end
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "lackie"
+    gemspec.summary = "Automates remote applications using an HTTP middleman"
+    gemspec.description = "Automates remote applications using an HTTP middleman"
+    gemspec.email = "joshuachisholm@gmail.com"
+    gemspec.homepage = "http://github.com/joshski/lackie"
+    gemspec.authors = ["Josh Chisholm"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
+end

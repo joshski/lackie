@@ -14,6 +14,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack', '~> 1.2.1'
   s.add_dependency 'rest-client', '~> 1.4.2'
   
+  s.add_development_dependency 'rspec', '~> 2.2.0'
+  s.add_development_dependency 'cucumber', '~> 0.10.0'
   s.add_development_dependency 'mongrel', '~> 1.1.5'
   s.add_development_dependency 'relevance-rcov', '~> 0.9.2.1'
   

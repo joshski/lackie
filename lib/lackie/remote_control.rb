@@ -20,7 +20,12 @@ module Lackie
     private
     
     def send_command(command)
-      RestClient.post("http://#{@host}:#{@port}/lackie/eval", command)
+      url = "http://#{@host}:#{@port}/lackie/eval"
+      begin
+        RestClient.post(url, command)
+      rescue => e
+        raise ConnectionError.new(url, e) 
+      end
     end
     
     def poll_for_result(command)
@@ -42,8 +47,22 @@ module Lackie
     
     def parse_result(body)
       parsed_body = JSON.parse(body)
-      raise RemoteExecutionError.new(parsed_body["error"]) if parsed_body.include?("error")
+      if parsed_body.include?("error")
+        raise RemoteExecutionError.new(parsed_body["error"]) 
+      end
       return parsed_body["value"]
+    end
+  end
+  
+  class ConnectionError < RuntimeError
+    def initialize(url, inner)
+      @url = url
+      @inner = inner
+    end
+    
+    def message
+      "Failed to send command to #{@url} - " +
+      "have you started a lackie server?\n#{@inner.message}"
     end
   end
   

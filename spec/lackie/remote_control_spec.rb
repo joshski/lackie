@@ -42,5 +42,15 @@ module Lackie
       RestClient.should_receive(:get).and_return(mock("response", :body => '{"error":"oops"}'))
       lambda { @rc.log("oops") }.should raise_error("oops")
     end
+    
+    it "reports a useful error when sending a command fails" do
+      RestClient.should_receive(:post).with("http://host:555/lackie/eval", 'foo').and_raise "oops"
+      begin
+        @rc.exec("foo")
+        fail "never raised"
+      rescue => e
+        e.message.should =~ /have you started a lackie server?/
+      end
+    end
   end
 end

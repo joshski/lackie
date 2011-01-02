@@ -52,7 +52,7 @@ module Lackie
             it "returns '' as the response body" do
               post("/lackie/eval", "foo()")
               get("/lackie/yield")
-              get("/lackie/yield").should == [200, {"Content-Type"=>"text/javascript"}, [""]]
+              get("/lackie/yield").should == [404, {"Content-Type"=>"text/plain"}, ["Not Found"]]
             end
           end
         end

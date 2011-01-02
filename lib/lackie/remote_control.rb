@@ -27,6 +27,7 @@ module Lackie
       body = nil
       @poller.await("result of command:\n#{command}") do
         body = retrieve_result_body
+        !body.nil?
       end
       parse_result(body)
     end

@@ -4,6 +4,7 @@ module Lackie
   module Rack
     class Middleware
       def initialize(app)
+        #puts "MIDDLEWARE CREATED"
         @app = app
         @command = nil
         @result = nil
@@ -31,9 +32,13 @@ module Lackie
       end
       
       def yield(request)
-        what = @command || ""
-        @command = nil
-        js(what)
+        if @command.nil?
+          not_found
+        else
+          cmd = @command
+          @command = nil
+          js(cmd)
+        end
       end
       
       def result(request)

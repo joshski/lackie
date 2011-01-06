@@ -12,9 +12,9 @@ module Lackie
       exec("Lackie.log(#{message.to_json})")
     end
     
-    def exec(command)
+    def exec(command, options={})
       send_command(command)
-      poll_for_result(command)
+      poll_for_result(command, options)
     end
     
     private
@@ -28,9 +28,9 @@ module Lackie
       end
     end
     
-    def poll_for_result(command)
+    def poll_for_result(command, options={})
       body = nil
-      @poller.await("result of command:\n#{command}") do
+      @poller.await("result of command:\n#{command}", options) do
         body = retrieve_result_body
         !body.nil?
       end

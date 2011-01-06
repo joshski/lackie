@@ -4,7 +4,6 @@ module Lackie
   module Rack
     class Middleware
       def initialize(app)
-        #puts "MIDDLEWARE CREATED"
         @app = app
         @command = nil
         @result = nil

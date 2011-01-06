@@ -33,6 +33,16 @@ module Lackie
       responses.should be_empty
     end
     
+    it "waits for a default number of seconds" do
+      @poller.should_receive(:await).with("result of command:\nfoo", {}).and_yield
+      @rc.exec("foo")
+    end
+    
+    it "waits for an ad-hoc number of seconds" do
+      @poller.should_receive(:await).with("result of command:\nbar", :timeout_seconds => 666).and_yield
+      @rc.exec("bar", :timeout_seconds => 666)
+    end
+    
     it "deserializes json results" do
       RestClient.should_receive(:get).and_return(mock("response", :body => '{"value":666}'))
       @rc.log("oops").should == 666

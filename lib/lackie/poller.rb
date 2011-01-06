@@ -6,7 +6,7 @@ module Lackie
       @sleeper = options.delete(:sleeper) || Kernel
     end
     
-    def await(outcome)
+    def await(outcome, options={})
       seconds_waited = 0
       while seconds_waited <= @timeout_seconds
         return if yield

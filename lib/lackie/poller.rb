@@ -8,7 +8,8 @@ module Lackie
     
     def await(outcome, options={})
       seconds_waited = 0
-      while seconds_waited <= @timeout_seconds
+      timeout_seconds = options[:timeout_seconds] || @timeout_seconds
+      while seconds_waited <= timeout_seconds
         return if yield
         @sleeper.sleep @interval_seconds
         seconds_waited += @interval_seconds

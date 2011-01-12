@@ -39,7 +39,7 @@ module Lackie
     
     def retrieve_result_body
       begin
-        RestClient.get("http://#{@host}:#{@port}/lackie/result").body
+        RestClient.get("http://#{@host}:#{@port}/lackie/result?#{Time.now.to_i}").body
       rescue RestClient::ResourceNotFound
         nil
       end

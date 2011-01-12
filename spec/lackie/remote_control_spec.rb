@@ -4,6 +4,7 @@ require 'lackie/javascript'
 module Lackie
   describe RemoteControl do
     before(:each) do
+      Time.stub!(:now).and_return(mock("now", :to_i => "cachebust"))
       @poller = Poller.new(:sleeper => mock("sleeper", :sleep => true))
       Poller.stub!(:new).and_return(@poller)
       @rc = RemoteControl.new("host", 555, @poller)
@@ -26,11 +27,21 @@ module Lackie
         lambda { raise RestClient::ResourceNotFound },
         lambda { mock("poll_response", :body => '{"value":"bar"}') }
       ]
-      RestClient.stub!(:get).with("http://host:555/lackie/result").and_return {
+      RestClient.stub!(:get).with("http://host:555/lackie/result?cachebust").and_return {
         responses.shift.call
       }
       @rc.exec("foo").should == "bar"
       responses.should be_empty
+    end
+    
+    it "cache-busts calls to GET /lackie/result" do
+      now = mock("now")
+      Time.should_receive(:now).and_return(now)
+      now.should_receive(:to_i).and_return("letmego")
+      RestClient.should_receive(:get).with("http://host:555/lackie/result?letmego").and_return(
+        mock("response", :body => '{"value":"123"}')
+      )
+      @rc.exec("foo")
     end
     
     it "waits for a default number of seconds" do

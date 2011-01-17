@@ -17,8 +17,6 @@ module Lackie
       poll_for_result(command, options)
     end
     
-    private
-    
     def send_command(command)
       url = "http://#{@host}:#{@port}/lackie/eval"
       begin
@@ -27,6 +25,8 @@ module Lackie
         raise ConnectionError.new(url, e) 
       end
     end
+    
+    private
     
     def poll_for_result(command, options={})
       body = nil

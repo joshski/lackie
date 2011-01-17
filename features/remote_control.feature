@@ -25,3 +25,10 @@ Feature: Remote Control
     Given I have surrendered my web page as a lackie
     When  I tell the lackie to log "yipee"
     Then  I should see a result with the value "yipee"
+    
+  Scenario: Send Command Without Expecting A Result
+    Given I have surrendered my web page as a lackie
+    When  I tell the lackie to send the command "window.foo = '123'"
+    Then  I should see a result with the value "OK"
+    When  I tell the lackie to execute "window.foo = 99"
+    Then  I should see a result with the value "99"

@@ -14,6 +14,10 @@ When /^I tell the lackie to execute "([^\"]*)"$/ do |script|
   end
 end
 
+When /^I tell the lackie to send the command "([^"]*)"$/ do |script|
+  @response = remote_control.send_command(script)
+end
+
 Then /^I should see a result with the value "([^\"]*)"$/ do |value|
   @response.to_s.should == value
 end

@@ -64,13 +64,43 @@ module Lackie
       lambda { @rc.log("oops") }.should raise_error("oops")
     end
     
-    it "reports a useful error when sending a command fails" do
+    it "raises when sending a command fails" do
       RestClient.should_receive(:post).with("http://host:555/lackie/eval", 'foo').and_raise "oops"
       begin
         @rc.exec("foo")
         fail "never raised"
       rescue => e
         e.message.should =~ /have you started a lackie server?/
+      end
+    end
+    
+    describe "#await" do
+      it "does not raise if the value eventually matches the block" do
+        responses = ["bar", "foo"].map do |result|
+          mock("stub_result_response", :body => { :value => result }.to_json)
+        end
+        RestClient.stub!(:get).with("http://host:555/lackie/result?cachebust").and_return {
+          responses.shift
+        }
+        lambda {
+          @rc.await("script") { |value| value == "foo" }
+        }.should_not raise_error
+      end
+      
+      it "raises if the value never matches the block" do
+        RestClient.stub!(:get).with("http://host:555/lackie/result?cachebust").and_return {
+          mock("stub_result_response", :body => '{"value":"oopsie"}')
+        }
+        begin
+          @rc.await("script") { |value| value == "bar" }
+        rescue Lackie::AwaitError => e
+          e.message.should =~ /oopsie/
+        end
+      end
+      
+      it "accepts an optional total number of seconds to wait" do
+        @poller.should_receive(:await).with("result matching expression: script", :timeout_seconds => 333)
+        @rc.await("script", :timeout_seconds => 333) { |value| value == "bar" }
       end
     end
   end

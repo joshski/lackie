@@ -26,6 +26,22 @@ module Lackie
       end
     end
     
+    def await(expression, options={})
+      result = nil
+      begin
+        @poller.await("result matching expression: #{expression}", options) do
+          begin
+            result = exec(expression)
+          rescue TimeoutError => e
+          end
+          yield result
+        end
+      rescue TimeoutError => e
+        raise AwaitError.new(expression, result)
+      end
+      result
+    end
+    
     private
     
     def poll_for_result(command, options={})
@@ -56,8 +72,7 @@ module Lackie
   
   class ConnectionError < RuntimeError
     def initialize(url, inner)
-      @url = url
-      @inner = inner
+      @url, @inner = url, inner
     end
     
     def message
@@ -67,5 +82,17 @@ module Lackie
   end
   
   class RemoteExecutionError < RuntimeError
+  end
+  
+  class AwaitError < RuntimeError
+    def initialize(expression, result)
+      @expression, @result = expression, result
+    end
+    
+    def message
+      "Timed out awaiting the result of expression:\n" +
+      "#{@expression}\n" +
+      "The last result was:\n#{@result}"
+    end
   end
 end

@@ -27,8 +27,8 @@ Feature: Remote Control
     
   Scenario: Reload The Browser
     When  I tell the lackie to execute "window.foo = 99"
-		When  I tell the lackie to execute "__RELOAD__"
-    Then  I should see a result with the value "__RELOADING__"
+		When  I tell the lackie to execute "Lackie.reload()"
+    Then  I should see a result with the value "reloading"
     When  I tell the lackie to execute "typeof window.foo"
 		Then  I should see a result with the value "undefined"
 

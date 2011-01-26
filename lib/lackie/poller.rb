@@ -14,7 +14,7 @@ module Lackie
         @sleeper.sleep @interval_seconds
         seconds_waited += @interval_seconds
       end
-      raise TimeoutError.new("Timed out after #{@timeout_seconds} seconds awaiting #{outcome}")
+      raise TimeoutError.new("Timed out after #{timeout_seconds} seconds awaiting #{outcome}")
     end
   end
   

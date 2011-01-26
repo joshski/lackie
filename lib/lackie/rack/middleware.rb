@@ -20,7 +20,7 @@ module Lackie
       end
       
       def surrender(request)
-        @result = nil
+        #@result = nil
         js(@surrender.script)
       end
       

@@ -15,10 +15,6 @@ When /^I tell the lackie to execute "([^\"]*)"$/ do |script|
   end
 end
 
-When /^I tell the lackie to send the command "([^"]*)"$/ do |script|
-  @response = remote_control.send_command(script)
-end
-
 When /^I await the result of "([^"]*)" to equal "([^"]*)"$/ do |script, value|
   @error = nil
   begin

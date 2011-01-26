@@ -25,11 +25,12 @@ Feature: Remote Control
     When  I tell the lackie to log "yipee"
     Then  I should see a result with the value "yipee"
     
-  Scenario: Send Command Without Expecting A Result
-    When  I tell the lackie to send the command "window.foo = '123'"
-    Then  I should see a result with the value "OK"
+  Scenario: Reload The Browser
     When  I tell the lackie to execute "window.foo = 99"
-    Then  I should see a result with the value "99"
+		When  I tell the lackie to execute "__RELOAD__"
+    Then  I should see a result with the value "__RELOADING__"
+    When  I tell the lackie to execute "typeof window.foo"
+		Then  I should see a result with the value "undefined"
 
   Scenario: Await Result
     When  I tell the lackie to execute "setTimeout(function() { window.foo = 666 }, 500)"

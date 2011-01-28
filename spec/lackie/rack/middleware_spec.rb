@@ -42,17 +42,31 @@ module Lackie
       end
       
       describe "POST /lackie/eval with the body 'foo()'" do
-        describe "followed by GET /lackie/yield" do
+        describe "then GET /lackie/yield" do
           it "returns 'foo()' as the response body" do
             post("/lackie/eval", "foo()")
             get("/lackie/yield").should == [200, {"Content-Type"=>"text/javascript"}, ["foo()"]]
           end
           
-          describe "followed by GET /lackie/yield" do
-            it "returns '' as the response body" do
+          describe "then GET /lackie/yield" do
+            it "returns not found" do
               post("/lackie/eval", "foo()")
               get("/lackie/yield")
               get("/lackie/yield").should == [404, {"Content-Type"=>"text/plain"}, ["Not Found"]]
+            end
+          end
+          
+          describe "then POST /lackie/eval with the body 'bar()'" do
+            describe "then POST /lackie/result with the body 'foo-result'" do
+              describe "then GET /lackie/result" do
+                it "returns 404 not found" do
+                  post("/lackie/eval", "foo()")
+                  get("/lackie/yield")
+                  post("/lackie/result", "foo-result")
+                  post("/lackie/eval", "bar()")
+                  get("/lackie/result").should == [404, {'Content-Type' => 'text/plain'}, ["Not Found"]]
+                end
+              end
             end
           end
         end
@@ -65,7 +79,7 @@ module Lackie
       end
       
       describe "POST /lackie/result with 'yippee'" do
-        describe "followed by GET /lackie/result" do
+        describe "then GET /lackie/result" do
           it "gets 'bar' as the response body" do
             post("/lackie/result", "'bar'")
             get("/lackie/result").should == [200, {"Content-Type"=>"application/json"}, ["'bar'"]]

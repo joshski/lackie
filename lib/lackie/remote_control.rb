@@ -1,6 +1,7 @@
 require 'restclient'
 require 'json'
 require 'lackie/poller'
+require 'lackie/cache_buster'
 
 module Lackie
   class RemoteControl
@@ -55,7 +56,7 @@ module Lackie
     
     def retrieve_result_body
       begin
-        RestClient.get("http://#{@host}:#{@port}/lackie/result?#{Time.now.to_i}").body
+        RestClient.get("http://#{@host}:#{@port}/lackie/result?#{CacheBuster.unique_string}").body
       rescue RestClient::ResourceNotFound
         nil
       end

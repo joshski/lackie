@@ -8,6 +8,7 @@ module Lackie
         @command = nil
         @result = nil
         @surrender = Lackie::JavaScript::Surrender.new
+        @id = 0
       end                
 
       def call(env)
@@ -36,7 +37,8 @@ module Lackie
         else
           cmd = @command
           @command = nil
-          js({ :command => cmd, :id => @id += 1}.to_json)
+          json = { :command => cmd, :id => @id += 1}.to_json
+          js(json)
         end
       end
       

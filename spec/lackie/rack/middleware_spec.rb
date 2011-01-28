@@ -45,7 +45,8 @@ module Lackie
         describe "then GET /lackie/yield" do
           it "returns 'foo()' as the response body" do
             post("/lackie/eval", "foo()")
-            get("/lackie/yield").should == [200, {"Content-Type"=>"text/javascript"}, ["foo()"]]
+            get("/lackie/yield").should == [200, {"Content-Type"=>"text/javascript"},
+              ['{"command":"foo()","id":1}'] ]
           end
           
           describe "then GET /lackie/yield" do

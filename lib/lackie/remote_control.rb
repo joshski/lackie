@@ -17,15 +17,6 @@ module Lackie
       poll_for_result(command, options)
     end
     
-    def send_command(command)
-      url = "http://#{@host}:#{@port}/lackie/eval"
-      begin
-        RestClient.post(url, command)
-      rescue => e
-        raise ConnectionError.new(url, e) 
-      end
-    end
-    
     def await(expression, options={})
       result = nil
       begin
@@ -43,6 +34,15 @@ module Lackie
     end
     
     private
+
+    def send_command(command)
+      url = "http://#{@host}:#{@port}/lackie/eval"
+      begin
+        RestClient.post(url, command)
+      rescue => e
+        raise ConnectionError.new(url, e) 
+      end
+    end
     
     def poll_for_result(command, options={})
       body = nil

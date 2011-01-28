@@ -79,11 +79,22 @@ module Lackie
         end        
       end
       
-      describe "POST /lackie/result with 'yippee'" do
+      describe "POST /lackie/result with valid json in the body" do
         describe "then GET /lackie/result" do
           it "gets 'bar' as the response body" do
-            post("/lackie/result", "'bar'")
-            get("/lackie/result").should == [200, {"Content-Type"=>"application/json"}, ["'bar'"]]
+            json_string = { :value => "happy", :id => 666 }.to_json
+            post("/lackie/result", json_string)
+            result_body = JSON.parse(get("/lackie/result").last.first)
+            result_body["id"].should == 666
+            result_body["value"].should == "happy"
+          end
+        end
+      end
+      
+      describe "POST /lackie/result with invalid json in the body" do
+        describe "then GET /lackie/result" do
+          it "returns 400 Bad Request" do
+            post("/lackie/result", "crunch").should == [400, {"Content-Type"=>'text/plain'}, ["Bad Request"]]
           end
         end
       end

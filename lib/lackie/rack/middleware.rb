@@ -63,8 +63,12 @@ module Lackie
       end
       
       def set_result(request)
-        @result = request.body.read.to_s
-        plain("OK")
+        begin
+          @result = JSON.parse(request.body.read.to_s).to_json
+          plain("OK")
+        rescue
+          bad_request
+        end
       end
       
       def js(script)
@@ -85,6 +89,10 @@ module Lackie
       
       def not_found
         [404, {'Content-Type' => 'text/plain'}, ['Not Found']]
+      end
+      
+      def bad_request
+        [400, {'Content-Type' => 'text/plain'}, ['Bad Request']]
       end
     end
   end

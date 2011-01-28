@@ -1,10 +1,11 @@
 require 'lackie/javascript'
+require 'lackie/rack/logger'
 
 module Lackie
   module Rack
     class Middleware
-      def initialize(app)
-        @app = app
+      def initialize(app, logger=NilLogger.new)
+        @app, @logger = app, logger
         @command = nil
         @result = nil
         @surrender = Lackie::JavaScript::Surrender.new
@@ -21,6 +22,7 @@ module Lackie
       end
       
       def surrender(request)
+        @logger.log("surrendered to #{request.user_agent}")
         js(@surrender.script)
       end
       
@@ -28,6 +30,7 @@ module Lackie
         @result = nil
         @command = request.body.read.to_s
         @command_id += 1
+        @logger.log("eval " + command_json(@command))
         plain("OK")
       end
       
@@ -37,7 +40,7 @@ module Lackie
         else
           cmd = @command
           @command = nil
-          js({ :command => cmd, :id => @command_id }.to_json)
+          js(command_json(cmd))
         end
       end
       
@@ -50,6 +53,10 @@ module Lackie
       end
       
       private
+      
+      def command_json(cmd)
+        { :command => cmd, :id => @command_id }.to_json
+      end
       
       def get_result(request)
         if @result.nil?
@@ -67,7 +74,10 @@ module Lackie
         rescue
           return bad_request
         end
-        @result = r.to_json if r['id'].to_i == @command_id
+        if r['id'].to_i == @command_id
+          @result = r.to_json
+          @logger.log("result #{@result}")
+        end
         plain("OK")
       end
       

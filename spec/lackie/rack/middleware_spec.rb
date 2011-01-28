@@ -5,14 +5,14 @@ module Lackie
   module Rack
     describe Middleware do
       before do
-        Lackie::JavaScript::Surrender.should_receive(:new).and_return(mock("surrender", :script => "yowzer"))
+        Lackie::JavaScript::Surrender.stub!(:new).and_return(mock("surrender", :script => "yowzer"))
         @app = mock("app")
         @env = mock("env")
         @middleware = Middleware.new(@app)
       end
       
       def request(options)
-        @request = mock("Request: #{options.inspect}", options)
+        @request = mock("Request: #{options.inspect}", options.merge(:user_agent => "some-user-agent"))
         ::Rack::Request.stub!(:new).with(@env).and_return(@request)
         @middleware.call(@env)
       end

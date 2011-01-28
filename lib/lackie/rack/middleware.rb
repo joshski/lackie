@@ -8,7 +8,7 @@ module Lackie
         @command = nil
         @result = nil
         @surrender = Lackie::JavaScript::Surrender.new
-        @id = 0
+        @command_id = 0
       end                
 
       def call(env)
@@ -21,13 +21,13 @@ module Lackie
       end
       
       def surrender(request)
-        #@result = nil
         js(@surrender.script)
       end
       
       def eval(request)
         @result = nil
         @command = request.body.read.to_s
+        @command_id += 1
         plain("OK")
       end
       
@@ -37,8 +37,7 @@ module Lackie
         else
           cmd = @command
           @command = nil
-          json = { :command => cmd, :id => @id += 1}.to_json
-          js(json)
+          js({ :command => cmd, :id => @command_id }.to_json)
         end
       end
       
@@ -64,11 +63,12 @@ module Lackie
       
       def set_result(request)
         begin
-          @result = JSON.parse(request.body.read.to_s).to_json
-          plain("OK")
+          r = JSON.parse(request.body.read.to_s)
         rescue
-          bad_request
+          return bad_request
         end
+        @result = r.to_json if r['id'].to_i == @command_id
+        plain("OK")
       end
       
       def js(script)

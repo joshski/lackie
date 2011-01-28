@@ -62,10 +62,21 @@ module Lackie
               describe "then GET /lackie/result" do
                 it "returns 404 not found" do
                   post("/lackie/eval", "foo()")
-                  get("/lackie/yield")
-                  post("/lackie/result", "foo-result")
                   post("/lackie/eval", "bar()")
+                  post("/lackie/result", { :id => 1, :value => "foo-result" }.to_json)
                   get("/lackie/result").should == [404, {'Content-Type' => 'text/plain'}, ["Not Found"]]
+                end
+                describe "then POST /lackie/result with the body 'bar-result'" do
+                  describe "then GET /lackie/result" do
+                    it "returns the value 'bar-result'" do
+                      post("/lackie/eval", "foo()")
+                      post("/lackie/eval", "bar()")
+                      post("/lackie/result", { :id => 1, :value => "foo-result" }.to_json)
+                      post("/lackie/result", { :id => 2, :value => "bar-result" }.to_json)
+                      result_body = JSON.parse(get("/lackie/result").last.first)
+                      result_body["value"].should == "bar-result"
+                    end
+                  end
                 end
               end
             end
@@ -82,11 +93,12 @@ module Lackie
       describe "POST /lackie/result with valid json in the body" do
         describe "then GET /lackie/result" do
           it "gets 'bar' as the response body" do
-            json_string = { :value => "happy", :id => 666 }.to_json
+            post("/lackie/eval", "happy")
+            json_string = { :value => "go lucky", :id => 1 }.to_json
             post("/lackie/result", json_string)
             result_body = JSON.parse(get("/lackie/result").last.first)
-            result_body["id"].should == 666
-            result_body["value"].should == "happy"
+            result_body["id"].should == 1
+            result_body["value"].should == "go lucky"
           end
         end
       end

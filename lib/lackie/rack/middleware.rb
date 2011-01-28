@@ -36,7 +36,7 @@ module Lackie
         else
           cmd = @command
           @command = nil
-          js(cmd)
+          js({ :command => cmd, :id => @id += 1}.to_json)
         end
       end
       

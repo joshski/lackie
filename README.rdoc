@@ -1,9 +1,8 @@
 = Lackie
 
-== Warning
+== Why?
 
-I haven't used Lackie to develop an application yet. But I have used it in
-various browsers including firefox, chrome and the samsung maple emulator.
+I built Lackie to drive the development an application on a JavaScript platform that was so non-standard that other tools freaked out. The code is as platform-independent as I could make it, so if that's important to you it will be a good fit, but otherwise you will get better performance and support from a functionally equivalent and more robust solution such as socket.io.
 
 == About
 
@@ -16,8 +15,7 @@ control remotely. Lackie requires minimal support in target environments:
 scheduling (e.g. window.setInterval) and HTTP client capabilities (e.g. ajax).
 
 Where it's difficult to programmatically launch the remote application, it can
-be started manually before the automation begins. Lackie effectively "attaches"
-itself to the running "zombie" application.
+be started manually before the automation begins. Lackie effectively "attaches" itself to the running "zombie" application.
 
 Lackie uses an HTTP service as a proxy for application automation commands:
 
